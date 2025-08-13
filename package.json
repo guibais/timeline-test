@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Airtable Timeline",
   "scripts": {
-    "start": "parcel src/index.html --open"
+    "start": "parcel src/index.html --open",
+    "build": "parcel build src/index.html"
   },
   "dependencies": {
     "react": "^18.0.0",

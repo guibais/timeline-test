@@ -1,5 +1,7 @@
 # Timeline Visualization Component
 
+🚀 **Live Demo**: [https://timeline-test-bco.pages.dev](https://timeline-test-bco.pages.dev)
+
 An interactive timeline component built with React that visualizes items in horizontal lanes with drag-and-drop functionality, zooming, and inline editing capabilities.
 
 ## Features
@@ -17,8 +19,6 @@ An interactive timeline component built with React that visualizes items in hori
 2. Run `npm install` to install dependencies
 3. Run `npm start` to start the development server
 4. The timeline will open in your default browser
-
-## Implementation Details
 
 ### What I Like About This Implementation
 

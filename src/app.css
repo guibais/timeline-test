@@ -287,6 +287,81 @@ body {
   50% { opacity: 0.9; }
 }
 
+/* Mobile touch optimizations */
+@media (max-width: 768px) {
+  .timeline-wrapper {
+    padding: 20px 10px 20px 80px;
+    max-height: 60vh;
+  }
+  
+  .lane-label {
+    left: -70px;
+    font-size: 0.8rem;
+  }
+  
+  .timeline-item {
+    height: 60px;
+    top: 5px;
+  }
+  
+  .timeline-lane {
+    height: 80px;
+  }
+  
+  .resize-handle {
+    width: 12px;
+    opacity: 0.6;
+  }
+  
+  .timeline-item:hover .resize-handle {
+    opacity: 1;
+  }
+  
+  .item-content {
+    padding: 10px 16px;
+  }
+  
+  .item-name {
+    font-size: 1rem;
+  }
+  
+  .item-dates {
+    font-size: 0.8rem;
+  }
+}
+
+/* Touch-specific styles */
+.timeline-item {
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.resize-handle {
+  touch-action: none;
+}
+
+/* Improve touch targets on mobile */
+@media (pointer: coarse) {
+  .resize-handle {
+    width: 16px;
+    opacity: 0.7;
+  }
+  
+  .timeline-item {
+    min-height: 50px;
+  }
+  
+  .zoom-btn {
+    padding: 12px 20px;
+    font-size: 1rem;
+  }
+}
+
 .tour-overlay {
   position: fixed;
   top: 0;

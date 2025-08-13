@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const TimelineItem = ({ item, position, onMouseDown, onItemUpdate, isDragging, laneColor }) => {
+const TimelineItem = ({ item, position, onPointerDown, onItemUpdate, isDragging, laneColor }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(item.name);
 
@@ -33,13 +33,18 @@ const TimelineItem = ({ item, position, onMouseDown, onItemUpdate, isDragging, l
         width: position.width,
         background: laneColor,
       }}
-      onMouseDown={(e) => onMouseDown(e, item, 'move')}
+      onMouseDown={(e) => onPointerDown(e, item, 'move')}
+      onTouchStart={(e) => onPointerDown(e, item, 'move')}
     >
       <div
         className="resize-handle resize-start"
         onMouseDown={(e) => {
           e.stopPropagation();
-          onMouseDown(e, item, 'resize-start');
+          onPointerDown(e, item, 'resize-start');
+        }}
+        onTouchStart={(e) => {
+          e.stopPropagation();
+          onPointerDown(e, item, 'resize-start');
         }}
       />
       
@@ -72,7 +77,11 @@ const TimelineItem = ({ item, position, onMouseDown, onItemUpdate, isDragging, l
         className="resize-handle resize-end"
         onMouseDown={(e) => {
           e.stopPropagation();
-          onMouseDown(e, item, 'resize-end');
+          onPointerDown(e, item, 'resize-end');
+        }}
+        onTouchStart={(e) => {
+          e.stopPropagation();
+          onPointerDown(e, item, 'resize-end');
         }}
       />
     </div>

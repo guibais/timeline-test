@@ -77,14 +77,22 @@ const Timeline = ({ items, onItemUpdate }) => {
   const handleZoomIn = () => setZoomLevel((prev) => Math.min(prev * 1.5, 5));
   const handleZoomOut = () => setZoomLevel((prev) => Math.max(prev / 1.5, 0.2));
 
-  const handleMouseDown = (e, item, dragType, laneIndex) => {
+  const getEventCoordinates = (e) => {
+    if (e.touches && e.touches.length > 0) {
+      return { clientX: e.touches[0].clientX, clientY: e.touches[0].clientY };
+    }
+    return { clientX: e.clientX, clientY: e.clientY };
+  };
+
+  const handlePointerDown = (e, item, dragType, laneIndex) => {
     e.preventDefault();
+    const coords = getEventCoordinates(e);
     setDragState({
       isDragging: true,
       dragType,
       itemId: item.id,
-      startX: e.clientX,
-      startY: e.clientY,
+      startX: coords.clientX,
+      startY: coords.clientY,
       originalStart: item.start,
       originalEnd: item.end,
       originalLane: laneIndex,
@@ -92,12 +100,13 @@ const Timeline = ({ items, onItemUpdate }) => {
     });
   };
 
-  const handleMouseMove = useCallback(
+  const handlePointerMove = useCallback(
     (e) => {
       if (!dragState.isDragging) return;
 
-      const deltaX = e.clientX - dragState.startX;
-      const deltaY = e.clientY - dragState.startY;
+      const coords = getEventCoordinates(e);
+      const deltaX = coords.clientX - dragState.startX;
+      const deltaY = coords.clientY - dragState.startY;
       const daysDelta = Math.round(deltaX / pixelsPerDay);
       const lanesDelta = Math.round(deltaY / 80);
       
@@ -151,7 +160,7 @@ const Timeline = ({ items, onItemUpdate }) => {
     [dragState, pixelsPerDay, items, onItemUpdate, laneColors.length]
   );
 
-  const handleMouseUp = useCallback(() => {
+  const handlePointerUp = useCallback(() => {
     if (dragState.isDragging && dragState.dragType === 'move' && dragState.currentLane !== dragState.originalLane) {
       setItemLanes(prev => ({ ...prev, [dragState.itemId]: dragState.currentLane }));
     }
@@ -171,14 +180,21 @@ const Timeline = ({ items, onItemUpdate }) => {
 
   React.useEffect(() => {
     if (dragState.isDragging) {
-      document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseUp);
+      document.addEventListener("mousemove", handlePointerMove, { passive: false });
+      document.addEventListener("mouseup", handlePointerUp);
+      document.addEventListener("touchmove", handlePointerMove, { passive: false });
+      document.addEventListener("touchend", handlePointerUp);
+      document.addEventListener("touchcancel", handlePointerUp);
+      
       return () => {
-        document.removeEventListener("mousemove", handleMouseMove);
-        document.removeEventListener("mouseup", handleMouseUp);
+        document.removeEventListener("mousemove", handlePointerMove);
+        document.removeEventListener("mouseup", handlePointerUp);
+        document.removeEventListener("touchmove", handlePointerMove);
+        document.removeEventListener("touchend", handlePointerUp);
+        document.removeEventListener("touchcancel", handlePointerUp);
       };
     }
-  }, [dragState.isDragging, handleMouseMove, handleMouseUp]);
+  }, [dragState.isDragging, handlePointerMove, handlePointerUp]);
 
   return (
     <div className="timeline-container">
@@ -214,7 +230,7 @@ const Timeline = ({ items, onItemUpdate }) => {
                   key={item.id}
                   item={item}
                   position={getItemPosition(item)}
-                  onMouseDown={(e, item, dragType) => handleMouseDown(e, item, dragType, laneIndex)}
+                  onPointerDown={(e, item, dragType) => handlePointerDown(e, item, dragType, laneIndex)}
                   onItemUpdate={onItemUpdate}
                   isDragging={
                     dragState.isDragging && dragState.itemId === item.id
